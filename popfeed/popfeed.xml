@@ -7,7 +7,7 @@
     <license>GNU General Public License</license>
     <authorEmail>mavrosxristoforos@gmail.com</authorEmail>
     <authorUrl>http://www.mavrosxristoforos.com/</authorUrl>
-    <version>1.1.0</version>
+    <version>1.2</version>
     <description>The simplest Plugin that popups a form to submit feedback.</description>
     <files>        
         <filename plugin="popfeed">popfeed.php</filename>
@@ -18,7 +18,7 @@
         type="radio"
         default="0"
         label="Auto PopFeed"
-        description="This is an option to automatically include popfeed in every article. If this is No, to include PopFeed in an article you write {popfeed}Leave your Feedback (or whatever else text in here){/popfeed}">
+        description="This is an option to automatically include PopFeed in every article. If this is No, to include PopFeed in an article you write {popfeed}Leave your Feedback (or whatever else text in here){/popfeed}">
             <option value="0">No</option>
             <option value="1">Yes</option>
         </param>  
@@ -26,7 +26,17 @@
         type="text"
         default="Leave your Feedback!"
         label="Auto Text"
-        description="If Auto PopFeed is on, this is the text that appears in the end of each article." />           
+        description="If Auto PopFeed is on, this is the text that appears in the end of each article." />
+        <param name="secids"
+        type="text"
+        default=""
+        label="Auto Sections"
+        description="This is an option to include PopFeed, only in articles of the specified sections. Auto PopFeed must be Yes. IDs Example: 1,2,3"/>
+        <param name="catids"
+        type="text"
+        default=""
+        label="Auto Categories"
+        description="This is an option to include PopFeed, only in articles of the specified categories. Auto PopFeed must be Yes. IDs Example: 1,2,3"/>        
 
         <param name="email_recipient"
         type="text"
