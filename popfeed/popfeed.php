@@ -46,14 +46,11 @@ class plgContentPopFeed extends JPlugin {
     else {
       if (JRequest::getVar('option') == 'com_content') {
         if ( (JRequest::getVar('view') == 'article') || (JRequest::getVar('view') == 'frontpage') || (JRequest::getVar('layout') == 'blog') ) {
-					$aid = -1;
-					if ((JRequest::getVar('option') == 'com_content') && (JRequest::getVar('view') == 'article')) {
-						$aid = JRequest::getInt('id', -1);
-					}
+					$aid = $row->id;
 
 					$includeme = true;
-					if ($aid != -1) {
-						if ($sections != '') {
+					if ($aid > 0) {
+						if ($secids != '') {
 							$db =& JFactory::getDBO();
 							$db->setQuery('SELECT COUNT(*) FROM `#__content` WHERE `id` = "'.$aid.'" AND `sectionid` IN ('.$secids.')');
 							$acount = $db->loadResult();
@@ -61,7 +58,7 @@ class plgContentPopFeed extends JPlugin {
 								$includeme = false;
 							}
 						}
-						if ($categories != '') {
+						if ($catids != '') {
 							$db =& JFactory::getDBO();
 							$db->setQuery('SELECT COUNT(*) FROM `#__content` WHERE `id` = "'.$aid.'" AND `catid` IN ('.$catids.')');
 							$acount = $db->loadResult();
