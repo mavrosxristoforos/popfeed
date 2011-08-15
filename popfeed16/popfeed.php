@@ -1,6 +1,6 @@
 <?php
 //**
-//* @Copyright Copyright (C) 2010- ... Christopher Mavros
+//* @Copyright Copyright (C) 2011 Christopher Mavros
 //* @license GNU/GPL http://www.gnu.org/copyleft/gpl.html
 //******/
 
@@ -15,7 +15,7 @@ class plgContentPopFeed extends JPlugin {
     parent::__construct( $subject, $config );
   }
 
-  function onPrepareContent(&$row, &$params, $page=0) {
+  public function onContentPrepare($context, &$row, &$params, $page = 0) {
     if (is_object($row)) {
         $text = &$row->text;
     }
@@ -24,17 +24,13 @@ class plgContentPopFeed extends JPlugin {
       $row = new stdClass();
       $row->id = 0;
     }
-    global $mainframe;
 
-    $plugin = & JPluginHelper::getPlugin('content', 'popfeed');
-    $pluginParams = new JParameter($plugin->params);
-
-    $auto_all = $pluginParams->def('auto_all', false);
-    $auto_all_text = $pluginParams->def('auto_all_text', 'Leave your feedback!');
-    $show_in_frontpage = $pluginParams->def('show_in_frontpage', false);
-    $show_in_blog = $pluginParams->def('show_in_blog', false);
-    $secids = $pluginParams->def('secids', '');
-    $catids = $pluginParams->def('catids', '');
+    $auto_all = $this->params->get('auto_all', false);
+    $auto_all_text = $this->params->get('auto_all_text', 'Leave your feedback!');
+    $show_in_frontpage = $this->params->get('show_in_frontpage', false);
+    $show_in_blog = $this->params->get('show_in_blog', false);
+    $secids = $this->params->get('secids', '');
+    $catids = $this->params->get('catids', '');
 
     $component_array = array();
     $component_array[] = 'com_content';
@@ -59,8 +55,11 @@ class plgContentPopFeed extends JPlugin {
       }
     }
     else {
-      if (in_array(JRequest::getVar('option'), $component_array)) {
-        if (in_array(JRequest::getVar('view'), $view_array)) {
+      $current_component = JRequest::getVar('option');
+      $current_view = JRequest::getVar('view');
+
+      if (in_array($current_component, $component_array)) {
+        if (in_array($current_view, $view_array)) {
 					$aid = $row->id;
 
 					$includeme = true;
@@ -90,8 +89,8 @@ class plgContentPopFeed extends JPlugin {
     }
 
     // check for a valid recipient
-    $recipient = $pluginParams->def('email_recipient', '');
-    $autoem = $pluginParams->def('auto_recipient', true);
+    $recipient = $this->params->get('email_recipient', '');
+    $autoem = $this->params->get('auto_recipient', true);
     if ($autoem == true) {
       if (is_object($row)) {
         $db =& JFactory::getDBO();
@@ -114,36 +113,36 @@ class plgContentPopFeed extends JPlugin {
       $lposition = JString::strpos($text, '{/popfeed_mailrecipient}');
       $mlength = $lposition - ($mposition + 23);
       $recipient = JString::substr($text, $mposition + 23, $mlength);
-      $text = JString::str_ireplace('{popfeed_mailrecipient}'.$recipient.'{/popfeed_mailrecipient}', '', $text);
+      $text = str_replace('{popfeed_mailrecipient}'.$recipient.'{/popfeed_mailrecipient}', '', $text);
     }
 
-    if (!eregi("^[_a-z0-9-]+(\.[_a-z0-9-]+)*@[a-z0-9-]+(\.[a-z0-9-]+)*(\.[a-z]{2,4})$", $recipient)) {
+    if (!preg_match("/^[_a-z0-9-]+(\.[_a-z0-9-]+)*@[a-z0-9-]+(\.[a-z0-9-]+)*(\.[a-z]{2,3})$/", $recipient)) {
       $myReplacement = '<span style="color: #f00;">Invalid or No recipient specified</span>';
-      $text = JString::str_ireplace('{popfeed}', $myReplacement, $text);
-      $text = JString::str_ireplace('{/popfeed}', '', $text);
+      $text = str_replace('{popfeed}', $myReplacement, $text);
+      $text = str_replace('{/popfeed}', '', $text);
       return true;
     }
 
     if ($recipient === "email@email.com") {
       $myReplacement = '<span style="color: #f00;">Mail Recipient is specified as email@email.com.<br/>Please change it from the Module parameters.</span>';
-      $text = JString::str_ireplace('{popfeed}', $myReplacement, $text);
-      $text = JString::str_ireplace('{/popfeed}', '', $text);
+      $text = str_replace('{popfeed}', $myReplacement, $text);
+      $text = str_replace('{/popfeed}', '', $text);
       return true;
     }
 
     if ($_POST["popfeedSecondForm" . $row->id]) {
 
-      $fromName = $pluginParams->def('from_name', 'PopFeed');
-      $fromEmail = $pluginParams->def('from_email', 'popfeed@yoursite.com');
+      $fromName = $this->params->get('from_name', 'PopFeed');
+      $fromEmail = $this->params->get('from_email', 'popfeed@yoursite.com');
 
-      $afterText = $pluginParams->def('after_text', 'Thank you for your feedback.');
-      $errorText = $pluginParams->def('error_text', 'Your feedback could not be submitted. Please try again.');
+      $afterText = $this->params->get('after_text', 'Thank you for your feedback.');
+      $errorText = $this->params->get('error_text', 'Your feedback could not be submitted. Please try again.');
 
-      $invalidEmail = $pluginParams->def('invalid_email', 'Submitted email is invalid. Please try again.');
+      $invalidEmail = $this->params->get('invalid_email', 'Submitted email is invalid. Please try again.');
 
-      if (!eregi("^[_a-z0-9-]+(\.[_a-z0-9-]+)*@[a-z0-9-]+(\.[a-z0-9-]+)*(\.[a-z]{2,4})$", $_POST["pf_email"])) {
+      if (!preg_match("/^[_a-z0-9-]+(\.[_a-z0-9-]+)*@[a-z0-9-]+(\.[a-z0-9-]+)*(\.[a-z]{2,3})$/", $_POST["pf_email"])) {
         $myErrorMessage = '<div class="popfeed_error">' . $invalidEmail . '</div><br/>{popfeed}';
-        $text = JString::str_ireplace('{popfeed}', $myErrorMessage, $text);
+        $text = str_replace('{popfeed}', $myErrorMessage, $text);
       }
       else {
         $mMessage = 'You received a message from ';
@@ -152,13 +151,25 @@ class plgContentPopFeed extends JPlugin {
         }
         $mMessage = $mMessage . '(' . $_POST["pf_email"] . ")\n\n";
         $mMessage = $mMessage . $_POST["pf_message"];
-        if (!JUtility::sendMail($fromEmail, $fromName, $recipient, $_POST["pf_subject"], $mMessage, false)) {
+
+        $mailSender = &JFactory::getMailer();
+        $mailSender->addRecipient($recipient);
+        if ($sendingWithSetEmail) {
+          $mailSender->setSender(array($fromEmail,$fromName));
+        }
+        else {
+          $mailSender->setSender(array($_POST["email".$unique_id],$_POST["name".$unique_id]));
+        }
+        $mailSender->setSubject($_POST["pf_subject"]);
+        $mailSender->setBody($mMessage);
+
+        if ($mailSender->Send() !== true) {
           $myErrorMessage = '<div class="popfeed_error">' . $errorText . '</div><br/>{popfeed}';
-          $text = JString::str_ireplace('{popfeed}', $myErrorMessage, $text);
+          $text = str_replace('{popfeed}', $myErrorMessage, $text);
         }
         else {
           $myOKMessage = '<div class="popfeed_message">' . $afterText . '</div><br/>{popfeed}';
-          $text = JString::str_ireplace('{popfeed}', $myOKMessage, $text);
+          $text = str_replace('{popfeed}', $myOKMessage, $text);
         }
       }
     }
@@ -168,12 +179,12 @@ class plgContentPopFeed extends JPlugin {
     //
     // NOT ESSENTIAL IF POSTED..!
     //
-    $exact_url = $pluginParams->def('exact_url', true);
-    $disable_https = $pluginParams->def('disable_https', false);
-    $fixed_url = $pluginParams->def('fixed_url', true);
+    $exact_url = $this->params->get('exact_url', true);
+    $disable_https = $this->params->get('disable_https', false);
+    $fixed_url = $this->params->get('fixed_url', true);
 
     if ($fixed_url) {
-      $url = $pluginParams->def('fixed_url_address', "");
+      $url = $this->params->get('fixed_url_address', "");
     }
     else {
       if (!$exact_url) {
@@ -191,14 +202,14 @@ class plgContentPopFeed extends JPlugin {
 
     // get the rest of the parameters and build the form
     //
-    $myNameLabel    = $pluginParams->def('name_label', 'Name:');
-    $myEmailLabel   = $pluginParams->def('email_label', 'Email:');
-    $mySubjectLabel = $pluginParams->def('subject_label', 'Subject:');
-    $myMessageLabel = $pluginParams->def('message_label', 'Message:');
-    $myPreText      = $pluginParams->def('pre_text', '<h2>Leave us Feedback</h2><br/>Use the form below to provide us feedback.<br/>Thank you<br/><br/>');
-    $myButtonText   = $pluginParams->def('button_text', 'Submit Feedback');
+    $myNameLabel    = $this->params->get('name_label', 'Name:');
+    $myEmailLabel   = $this->params->get('email_label', 'Email:');
+    $mySubjectLabel = $this->params->get('subject_label', 'Subject:');
+    $myMessageLabel = $this->params->get('message_label', 'Message:');
+    $myPreText      = $this->params->get('pre_text', '');
+    $myButtonText   = $this->params->get('button_text', 'Submit Feedback');
 
-    $autos = $pluginParams->def('auto_subject', true);
+    $autos = $this->params->get('auto_subject', true);
     $auto_subject   = '';
     if ($autos) {
       //$db =& JFactory::getDBO();
@@ -211,7 +222,7 @@ class plgContentPopFeed extends JPlugin {
       }
     }
 
-    $myFormURL = JURI::base() . 'plugins/content/popfeed/form.php';
+    $myFormURL = JURI::base() . 'plugins/content/popfeed/popfeed/form.php';
 
     $myScript = '<script>' . "\n" .
                 'function sendForm' . $row->id . '() {' . "\n" .
@@ -246,8 +257,8 @@ class plgContentPopFeed extends JPlugin {
 
     $myLinkStart = $myScript . $myForm . $mySecondForm .'<div class="popfeedLink"><a href="#" onClick="sendForm' . $row->id . '();">';
 
-    $text = JString::str_ireplace('{popfeed}', $myLinkStart, $text);
-    $text = JString::str_ireplace('{/popfeed}', '</a></div>', $text);
+    $text = str_replace('{popfeed}', $myLinkStart, $text);
+    $text = str_replace('{/popfeed}', '</a></div>', $text);
 
 
     return true;
