@@ -93,18 +93,22 @@ class plgContentPopFeed extends JPlugin {
     $recipient = $pluginParams->def('email_recipient', '');
     $autoem = $pluginParams->def('auto_recipient', true);
     if ($autoem == true) {
+      //if (is_object($row)) {
+      //  $db =& JFactory::getDBO();
+      //  $myArticleId = $row->id;
+      //  $query = 'SELECT * FROM `#__content` WHERE `id` = "'.mysql_escape_string($myArticleId).'"';
+      //  $db->setQuery($query);
+      //  $myResult = $db->loadObject();
+//
+      //  $query = 'SELECT * FROM `#__users` WHERE `id` = "'.mysql_escape_string($myResult->created_by).'"';
+      //  $db->setQuery($query);
+      //  $myAuthor = $db->loadObject();
+//
+      //  $recipient = $myAuthor->email;
+      //}
       if (is_object($row)) {
-        $db =& JFactory::getDBO();
-        $myArticleId = $row->id;
-        $query = 'SELECT * FROM `#__content` WHERE `id` = "'.mysql_escape_string($myArticleId).'"';
-        $db->setQuery($query);
-        $myResult = $db->loadObject();
-
-        $query = 'SELECT * FROM `#__users` WHERE `id` = "'.mysql_escape_string($myResult->created_by).'"';
-        $db->setQuery($query);
-        $myAuthor = $db->loadObject();
-
-        $recipient = $myAuthor->email;
+        $user_tmp = &JFactory::getuser($row->created_by);
+        $recipient = $user_tmp->email;
       }
     }
 
@@ -141,7 +145,7 @@ class plgContentPopFeed extends JPlugin {
 
       $invalidEmail = $pluginParams->def('invalid_email', 'Submitted email is invalid. Please try again.');
 
-      if (!eregi("^[_a-z0-9-]+(\.[_a-z0-9-]+)*@[a-z0-9-]+(\.[a-z0-9-]+)*(\.[a-z]{2,4})$", $_POST["pf_email"])) {
+      if (!preg_match("/^[_a-z0-9-]+(\.[_a-z0-9-]+)*@[a-z0-9-]+(\.[a-z0-9-]+)*(\.[a-z]{2,4})$/", $_POST["pf_email"])) {
         $myErrorMessage = '<div class="popfeed_error">' . $invalidEmail . '</div><br/>{popfeed}';
         $text = JString::str_ireplace('{popfeed}', $myErrorMessage, $text);
       }
