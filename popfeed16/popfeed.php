@@ -38,12 +38,12 @@ class plgContentPopFeed extends JPlugin {
     $view_array = array();
     $view_array[] = 'article';
 
-		if ($show_in_frontpage) {
-			$view_array[] = 'frontpage';
-		}
-		if ($show_in_blog) {
-			$view_array[] = 'blog';
-		}
+    if ($show_in_frontpage) {
+      $view_array[] = 'frontpage';
+    }
+    if ($show_in_blog) {
+      $view_array[] = 'blog';
+    }
 
     if (!$auto_all) {
       if (JString::strpos($text, '{popfeed}') === false) {
@@ -60,28 +60,28 @@ class plgContentPopFeed extends JPlugin {
 
       if (in_array($current_component, $component_array)) {
         if (in_array($current_view, $view_array)) {
-					$aid = $row->id;
+          $aid = $row->id;
 
-					$includeme = true;
-					if ($aid > 0) {
-						if ($secids != '') {
-							$db =& JFactory::getDBO();
-							$db->setQuery('SELECT COUNT(*) FROM `#__content` WHERE `id` = "'.$aid.'" AND `sectionid` IN ('.$secids.')');
-							$acount = $db->loadResult();
-							if ($acount == '0') {
-								$includeme = false;
-							}
-						}
-						if ($catids != '') {
-							$db =& JFactory::getDBO();
-							$db->setQuery('SELECT COUNT(*) FROM `#__content` WHERE `id` = "'.$aid.'" AND `catid` IN ('.$catids.')');
-							$acount = $db->loadResult();
-							if ($acount == '0') {
-								$includeme = false;
-							}
-						}
-					}
-					if ($includeme == true) {
+          $includeme = true;
+          if ($aid > 0) {
+            if ($secids != '') {
+              $db =& JFactory::getDBO();
+              $db->setQuery('SELECT COUNT(*) FROM `#__content` WHERE `id` = "'.$aid.'" AND `sectionid` IN ('.$secids.')');
+              $acount = $db->loadResult();
+              if ($acount == '0') {
+                $includeme = false;
+              }
+            }
+            if ($catids != '') {
+              $db =& JFactory::getDBO();
+              $db->setQuery('SELECT COUNT(*) FROM `#__content` WHERE `id` = "'.$aid.'" AND `catid` IN ('.$catids.')');
+              $acount = $db->loadResult();
+              if ($acount == '0') {
+                $includeme = false;
+              }
+            }
+          }
+          if ($includeme == true) {
             $text = $text . '{popfeed}' . $auto_all_text . '{/popfeed}';
           }
         }
@@ -90,8 +90,8 @@ class plgContentPopFeed extends JPlugin {
 
     // check for a valid recipient
     $recipient = $this->params->get('email_recipient', '');
-    $autoem = $this->params->get('auto_recipient', true);
-    if ($autoem == true) {
+    $autoem = $this->params->get('auto_recipient', '0');
+    if ($autoem == '1') {
       //if (is_object($row)) {
       //  $db =& JFactory::getDBO();
       //  $myArticleId = $row->id;
@@ -134,7 +134,7 @@ class plgContentPopFeed extends JPlugin {
       return true;
     }
 
-    if ($_POST["popfeedSecondForm" . $row->id]) {
+    if (isset($_POST["popfeedSecondForm" . $row->id])) {
 
       $fromName = $this->params->get('from_name', 'PopFeed');
       $fromEmail = $this->params->get('from_email', 'popfeed@yoursite.com');
@@ -158,11 +158,11 @@ class plgContentPopFeed extends JPlugin {
 
         $mailSender = &JFactory::getMailer();
         $mailSender->addRecipient($recipient);
-        if ($sendingWithSetEmail) {
+        if ($this->params->get('from_email', 'popfeed@yoursite.com') != 'popfeed@yoursite.com') {
           $mailSender->setSender(array($fromEmail,$fromName));
         }
         else {
-          $mailSender->setSender(array($_POST["email".$unique_id],$_POST["name".$unique_id]));
+          $mailSender->setSender(array($_POST["pf_email"],$_POST["pf_name"]));
         }
         $mailSender->setSubject($_POST["pf_subject"]);
         $mailSender->setBody($mMessage);
