@@ -23,7 +23,7 @@
             <option value="1">Yes</option>
         </field>
         <field name="auto_all_text"
-        type="text"
+        type="text" filter="raw"
         default="Leave your Feedback!"
         label="Auto Text"
         description="If Auto PopFeed is on, this is the text that appears in the end of each article." size="60"/>
@@ -52,7 +52,11 @@
         type="text"
         default=""
         label="Auto Categories"
-        description="This is an option to include PopFeed, only in articles of the specified categories. Auto PopFeed must be Yes. IDs Example: 1,2,3" size="60"/>        
+        description="This is an option to include PopFeed, only in articles of the specified categories. Auto PopFeed must be Yes. IDs Example: 1,2,3" size="60"/>
+        <field name="excluded_ids"
+        type="text" default=""
+        label="Exclude IDs"
+        description="Here you can write articles that you would like PopFeed not to work in. Example: 1,2,3"/>
 
         <field name="email_recipient"
         type="text"

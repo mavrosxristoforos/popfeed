@@ -31,6 +31,7 @@ class plgContentPopFeed extends JPlugin {
     $show_in_blog = $this->params->get('show_in_blog', false);
     $secids = $this->params->get('secids', '');
     $catids = $this->params->get('catids', '');
+    $excluded_ids = $this->params->get('excluded_ids', '');
 
     $component_array = array();
     $component_array[] = 'com_content';
@@ -58,12 +59,18 @@ class plgContentPopFeed extends JPlugin {
       $current_component = JRequest::getVar('option');
       $current_view = JRequest::getVar('view');
 
+      $excluded = explode(',', $excluded_ids);
+
       if (in_array($current_component, $component_array)) {
         if (in_array($current_view, $view_array)) {
           $aid = $row->id;
 
           $includeme = true;
+
           if ($aid > 0) {
+            if (in_array($aid, $excluded)) {
+              $includeme = false;
+            }
             if ($secids != '') {
               $db =& JFactory::getDBO();
               $db->setQuery('SELECT COUNT(*) FROM `#__content` WHERE `id` = "'.$aid.'" AND `sectionid` IN ('.$secids.')');
