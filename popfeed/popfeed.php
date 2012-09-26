@@ -42,12 +42,12 @@ class plgContentPopFeed extends JPlugin {
     $view_array = array();
     $view_array[] = 'article';
 
-		if ($show_in_frontpage) {
-			$view_array[] = 'frontpage';
-		}
-		if ($show_in_blog) {
-			$view_array[] = 'blog';
-		}
+    if ($show_in_frontpage) {
+      $view_array[] = 'frontpage';
+    }
+    if ($show_in_blog) {
+      $view_array[] = 'blog';
+    }
 
     if (!$auto_all) {
       if (JString::strpos($text, '{popfeed}') === false) {
@@ -61,28 +61,28 @@ class plgContentPopFeed extends JPlugin {
     else {
       if (in_array(JRequest::getVar('option'), $component_array)) {
         if (in_array(JRequest::getVar('view'), $view_array)) {
-					$aid = $row->id;
+          $aid = $row->id;
 
-					$includeme = true;
-					if ($aid > 0) {
-						if ($secids != '') {
-							$db =& JFactory::getDBO();
-							$db->setQuery('SELECT COUNT(*) FROM `#__content` WHERE `id` = "'.$aid.'" AND `sectionid` IN ('.$secids.')');
-							$acount = $db->loadResult();
-							if ($acount == '0') {
-								$includeme = false;
-							}
-						}
-						if ($catids != '') {
-							$db =& JFactory::getDBO();
-							$db->setQuery('SELECT COUNT(*) FROM `#__content` WHERE `id` = "'.$aid.'" AND `catid` IN ('.$catids.')');
-							$acount = $db->loadResult();
-							if ($acount == '0') {
-								$includeme = false;
-							}
-						}
-					}
-					if ($includeme == true) {
+          $includeme = true;
+          if ($aid > 0) {
+            if ($secids != '') {
+              $db =& JFactory::getDBO();
+              $db->setQuery('SELECT COUNT(*) FROM `#__content` WHERE `id` = "'.$aid.'" AND `sectionid` IN ('.$secids.')');
+              $acount = $db->loadResult();
+              if ($acount == '0') {
+                $includeme = false;
+              }
+            }
+            if ($catids != '') {
+              $db =& JFactory::getDBO();
+              $db->setQuery('SELECT COUNT(*) FROM `#__content` WHERE `id` = "'.$aid.'" AND `catid` IN ('.$catids.')');
+              $acount = $db->loadResult();
+              if ($acount == '0') {
+                $includeme = false;
+              }
+            }
+          }
+          if ($includeme == true) {
             $text = $text . '{popfeed}' . $auto_all_text . '{/popfeed}';
           }
         }
@@ -224,8 +224,9 @@ class plgContentPopFeed extends JPlugin {
                 '  if (w.opener.theForm == null) w.opener.theForm = document.popfeedSecondForm' . $row->id . ';' . "\n" .
                 '  var a = window.setTimeout("document.popfeedFirstForm' . $row->id . '.submit();",500);' . "\n" .
                 '  w.focus();' . "\n" .
-                '  return true;' . "\n" .
+                '  return false;' . "\n" .
                 '}' . "\n" .
+                'function _void() { return false; }'."\n".
                 '</script>' . "\n";
 
     $myForm = '<form name="popfeedFirstForm' . $row->id . '" action="'.$myFormURL.'" method="post" target="Popup_Window">' .
@@ -248,7 +249,7 @@ class plgContentPopFeed extends JPlugin {
                     '<input type="hidden" name="popfeedSecondForm' . $row->id . '" value="true"/>' .
                     '</form>' . "\n";
 
-    $myLinkStart = $myScript . $myForm . $mySecondForm .'<div class="popfeedLink"><a href="#" onClick="sendForm' . $row->id . '();">';
+    $myLinkStart = $myScript . $myForm . $mySecondForm .'<div class="popfeedLink"><a href="javascript: _void();" onClick="return sendForm' . $row->id . '();">';
 
     $text = JString::str_ireplace('{popfeed}', $myLinkStart, $text);
     $text = JString::str_ireplace('{/popfeed}', '</a></div>', $text);

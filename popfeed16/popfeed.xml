@@ -43,11 +43,6 @@
             <option value="0">No</option>
             <option value="1">Yes</option>
         </field>        
-        <field name="secids"
-        type="text"
-        default=""
-        label="Auto Sections"
-        description="This is an option to include PopFeed, only in articles of the specified sections. Auto PopFeed must be Yes. IDs Example: 1,2,3" size="60"/>
         <field name="catids"
         type="text"
         default=""
