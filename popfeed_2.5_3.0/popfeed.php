@@ -74,7 +74,7 @@ class plgContentPopFeed extends JPlugin {
                 $includeme = false;
               }
               if ($catids != '') {
-                $db =& JFactory::getDBO();
+                $db = JFactory::getDBO();
                 $db->setQuery('SELECT COUNT(*) FROM `#__content` WHERE `id` = "'.$aid.'" AND `catid` IN ('.$catids.')');
                 $acount = $db->loadResult();
                 if ($acount == '0') {
@@ -94,7 +94,7 @@ class plgContentPopFeed extends JPlugin {
       $autoem = $this->params->get('auto_recipient', '0');
       if ($autoem == '1') {
         //if (is_object($row)) {
-        //  $db =& JFactory::getDBO();
+        //  $db = JFactory::getDBO();
         //  $myArticleId = $row->id;
         //  $query = 'SELECT * FROM `#__content` WHERE `id` = "'.mysql_escape_string($myArticleId).'"';
         //  $db->setQuery($query);
@@ -107,7 +107,7 @@ class plgContentPopFeed extends JPlugin {
         //  $recipient = $myAuthor->email;
         //}
         if (is_object($row)) {
-          $user_tmp = &JFactory::getuser($row->created_by);
+          $user_tmp = JFactory::getuser($row->created_by);
           $recipient = $user_tmp->email;
         }
       }
@@ -157,7 +157,7 @@ class plgContentPopFeed extends JPlugin {
           $mMessage = $mMessage . '(' . $_POST["pf_email"] . ")\n\n";
           $mMessage = $mMessage . $_POST["pf_message"];
 
-          $mailSender = &JFactory::getMailer();
+          $mailSender = JFactory::getMailer();
           $mailSender->addRecipient($recipient);
           if ($this->params->get('from_email', 'popfeed@yoursite.com') != 'popfeed@yoursite.com') {
             $mailSender->setSender(array($fromEmail,$fromName));
@@ -217,7 +217,7 @@ class plgContentPopFeed extends JPlugin {
       $autos = $this->params->get('auto_subject', true);
       $auto_subject   = '';
       if ($autos) {
-        //$db =& JFactory::getDBO();
+        //$db = JFactory::getDBO();
         //$myArticleId = $row->id;
         //$query = 'SELECT * FROM `#__content` WHERE `id` = "'.mysql_escape_string($myArticleId).'"';
         //$db->setQuery($query);
