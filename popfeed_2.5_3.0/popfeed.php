@@ -155,6 +155,7 @@ class plgContentPopFeed extends JPlugin {
             $mMessage = $mMessage . $_POST["pf_name"] . ' ';
           }
           $mMessage = $mMessage . '(' . $_POST["pf_email"] . ")\n\n";
+          $mMessage = $mMessage . "Article: http://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]\n\n";
           $mMessage = $mMessage . $_POST["pf_message"];
 
           $mailSender = JFactory::getMailer();
