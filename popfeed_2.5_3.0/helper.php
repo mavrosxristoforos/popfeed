@@ -8,28 +8,36 @@ class PlgPopFeedHelper {
   public $article;
   public $hasArticle;
   public $recipient;
+  public $messages;
+  public $include_external_libraries;
+  public $popfeed_appearance;
+  public $mailer;
+  public $posted_values;
 
   public function initialize($params, $row) {
     $this->params = $params;
+    $this->messages = '';
     $this->hasArticle = (is_object($row));
     $this->article = ($this->hasArticle) ? $row : '';
+		$this->include_external_libraries = $this->params->get('include_external_libraries', '0');
+		$this->popfeed_appearance = $this->params->get('popfeed_appearance', '0');
+  }
+
+  public function shouldBeHere() {
+    return ($this->hasArticle) && (isset($this->article->text))
+        && ( ($this->params->get('auto_all', false))
+             || (strpos($this->article->text, '{popfeed}') !== false)
+             || (strpos($this->article->text, 'id="popfeed_form_'.$this->article->id.'"')) )
+        && ( ($this->isNotExcluded()) && ($this->isValidComponentView()) );
   }
 
   public function initializeArticleText() {
-    if ($this->hasArticle) {
-      // Do not include PopFeed in modules.
-      if (isset($this->article->text)) {
-        if ( ($this->params->get('auto_all', false)) || (strpos($this->article->text, '{popfeed}') !== false) ) {
-          // Include PopFeed only in desired locations.
-          if ( ($this->isNotExcluded()) && ($this->isValidComponentView()) ) {
-            if (strpos($this->article->text, '{popfeed}') === false) {
-              // Means we came here from auto_include
-              $this->article->text .= '{popfeed}' . $this->i18n('LEAVE_YOUR_FEEDBACK', 'Leave your feedback!') . '{/popfeed}';
-            }
-            return true;
-          }
-        }
+    if ($this->shouldBeHere()) {
+      if (strpos($this->article->text, '{popfeed}') === false) {
+         // Means we came here from auto_include
+         $this->article->text .= '{popfeed}' . $this->i18n('LEAVE_YOUR_FEEDBACK', 'Leave your feedback!') . '{/popfeed}';
       }
+      return true;
     }
     return false;
   }
@@ -86,18 +94,84 @@ class PlgPopFeedHelper {
 		      && (in_array(JRequest::getVar('view'), $view_array)) );
   }
 
+  public function addMessage($key, $def, $msg_type) {
+    $this->messages .= '<div class="popfeed_'.$msg_type.' '.$msg_type.'">'.$this->i18n($key, $def).'</div>';
+  }
+
+  public function hasCaptcha() {
+    if ($this->params->get('use_captcha', '1')) {
+      $db = JFactory::getDBO();
+      $db->setQuery('SELECT COUNT(`extension_id`) FROM `#__extensions` WHERE `type`="plugin" AND `folder`="captcha" AND `enabled`=1');
+      return $db->loadResult();
+    }
+    return false;
+  }
+
+  public function filterItem($value) {
+    return ($this->params->get('htmlentities_in_email', '0')) ? htmlentities($value, ENT_COMPAT, "UTF-8") : $value;
+  }
+
   public function prepareEmail() {
     if ($this->hasArticle) {
-      if (isset($_POST['popfeed_form_'.$this->article->id])) {
-        // posted data =
-        return true;
+      $form_id = 'popfeed_form_'.$this->article->id;
+      if (isset($_POST[$form_id.'_post'])) {
+        $isValidPost = true;
+        if ($this->hasCaptcha()) {
+          JPluginHelper::importPlugin('captcha');
+          $d = JEventDispatcher::getInstance();
+          $res = $d->trigger('onCheckAnswer', 'not_used');
+          if( (!isset($res[0])) || (!$res[0]) ) {
+            $this->addMessage('INVALID_CAPTCHA', 'Invalid Captcha', 'error');
+            $isValidPost = false;
+          }
+        }
+
+        if ($isValidPost) {
+          // Determine if Rapid Contact Ex is installed.
+          $this->posted_values = array();
+          $this->posted_values['name'] = $this->filterItem($_POST[$form_id.'_name']);
+          $this->posted_values['email'] = $this->filterItem($_POST[$form_id.'_email']);
+          $this->posted_values['subject'] = $this->filterItem($_POST[$form_id.'_subject']);
+          $this->posted_values['message'] = $this->filterItem($_POST[$form_id.'_message']);
+
+          if (!preg_match("/^[_a-z0-9-]+(\.[_a-z0-9-]+)*@[a-z0-9-]+(\.[a-z0-9-]+)*(\.[a-z]{2,4})$/", $this->posted_values['email'])) {
+            $this->addMessage('INVALID_EMAIL', 'Submitted email is invalid. Please try again.', 'error');
+          }
+          else {
+            $this->mailer = JFactory::getMailer();
+            $this->mailer->addRecipient($this->recipient); // One recipient is allowed when initializing.
+            $app = JFactory::getApplication();
+            $this->mailer->setSender(array($app->getCfg('mailfrom'),$this->posted_values['name']));
+            $this->mailer->addReplyTo(array( $this->posted_values['email'], $this->posted_values['name'] ));
+            $this->mailer->setSubject($this->posted_values['subject']);
+            return true; // means send.
+          }
+        }
       }
     }
     return false;
   }
 
-  public function replacePopFeedTag($replacement) {
+  public function loadAssets() {
+		$document = JFactory::getDocument();
+		if ($this->params->get('include_css', true)) {
+			$document->addStyleSheet(JURI::base().'plugins/content/popfeed/assets/popfeed.css');
+		}
+		if (in_array($this->include_external_libraries, array(0,1))) {
+			// Load jQuery
+			JHtml::_('jquery.framework');
+		}
+		if (in_array($this->include_external_libraries, array(0,2))) {
+			// Load ColorBox
+			$document->addStyleSheet(JURI::base().'plugins/content/popfeed/assets/colorbox.css');
+			$document->addScript(JURI::base().'plugins/content/popfeed/assets/jquery.colorbox-min.js');
+		}
+  }
+
+  public function replacePopFeedTag($replacement, $include_messages = false) {
     if ($this->hasArticle) {
+      $replacement = ($include_messages && ($this->messages != ''))
+                   ? '<div class="popfeed_messages">'.$this->messages.'</div>'.$replacement : $replacement;
       $this->article->text = preg_replace('/{popfeed}.*{\/popfeed}/i', $replacement, $this->article->text);
       return true;
     }
