@@ -21,6 +21,8 @@ class PlgPopFeedHelper {
     $this->article = ($this->hasArticle) ? $row : '';
 		$this->include_external_libraries = $this->params->get('include_external_libraries', '0');
 		$this->popfeed_appearance = $this->params->get('popfeed_appearance', '0');
+
+		JPlugin::loadLanguage('plg_content_popfeed');
   }
 
   public function shouldBeHere() {
