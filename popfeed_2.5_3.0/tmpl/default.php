@@ -13,9 +13,7 @@ $a_href = ($helper->popfeed_appearance == '0') ? '#'.$form_id : 'javascript:void
 
 if ($helper->hasCaptcha()) {
   // Initialize Captcha
-  JPluginHelper::importPlugin('captcha');
-  $dispatcher = JDispatcher::getInstance();
-  $dispatcher->trigger('onInit','popfeed_recaptcha_'.$form_id);
+  $captcha_field = (JFactory::getConfig()->get('captcha') != '0') ? JCaptcha::getInstance(JFactory::getConfig()->get('captcha'))->display('popfeed_recaptcha_'.$form_id, 'popfeed_recaptcha_'.$form_id, 'g-recaptcha') : '';
 }
 
 ?>
@@ -69,7 +67,7 @@ if ($helper->hasCaptcha()) {
     </div>
 <?php if ($helper->hasCaptcha()) { ?>
     <div class="popfeed_field captcha_field">
-      <div id="popfeed_recaptcha_<?php print $form_id; ?>" style="margin-bottom: 5px;"></div>
+      <?php print $captcha_field; ?>
     </div>
 <?php } ?>
     <div class="popfeed_field popfeed_button">
