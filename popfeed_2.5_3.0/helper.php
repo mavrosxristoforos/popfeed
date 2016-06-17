@@ -19,10 +19,10 @@ class PlgPopFeedHelper {
     $this->messages = '';
     $this->hasArticle = (is_object($row));
     $this->article = ($this->hasArticle) ? $row : '';
-		$this->include_external_libraries = $this->params->get('include_external_libraries', '0');
-		$this->popfeed_appearance = $this->params->get('popfeed_appearance', '0');
+    $this->include_external_libraries = $this->params->get('include_external_libraries', '0');
+    $this->popfeed_appearance = $this->params->get('popfeed_appearance', '0');
 
-		JPlugin::loadLanguage('plg_content_popfeed');
+    JPlugin::loadLanguage('plg_content_popfeed');
   }
 
   public function shouldBeHere() {
@@ -92,8 +92,8 @@ class PlgPopFeedHelper {
       $view_array[] = 'category';
     }
 
-		return ( (in_array(JRequest::getVar('option'), $component_array))
-		      && (in_array(JRequest::getVar('view'), $view_array)) );
+    return ( (in_array(JRequest::getVar('option'), $component_array))
+          && (in_array(JRequest::getVar('view'), $view_array)) );
   }
 
   public function addMessage($key, $def, $msg_type) {
@@ -144,7 +144,12 @@ class PlgPopFeedHelper {
             $this->mailer->addRecipient($this->recipient); // One recipient is allowed when initializing.
             $app = JFactory::getApplication();
             $this->mailer->setSender(array($app->getCfg('mailfrom'),$this->posted_values['name']));
-            $this->mailer->addReplyTo(array( $this->posted_values['email'], $this->posted_values['name'] ));
+            if(version_compare(JVERSION, '3.5', 'ge')) {
+              $this->mailer->addReplyTo($this->posted_values['email'], $this->posted_values['name']);
+            }
+            else {
+              $this->mailer->addReplyTo(array( $this->posted_values['email'], $this->posted_values['name'] ));
+            }
             $this->mailer->setSubject($this->posted_values['subject']);
             return true; // means send.
           }
@@ -155,19 +160,19 @@ class PlgPopFeedHelper {
   }
 
   public function loadAssets() {
-		$document = JFactory::getDocument();
-		if ($this->params->get('include_css', true)) {
-			$document->addStyleSheet(JURI::base().'plugins/content/popfeed/assets/popfeed.css');
-		}
-		if (in_array($this->include_external_libraries, array(0,1))) {
-			// Load jQuery
-			JHtml::_('jquery.framework');
-		}
-		if (in_array($this->include_external_libraries, array(0,2))) {
-			// Load ColorBox
-			$document->addStyleSheet(JURI::base().'plugins/content/popfeed/assets/colorbox.css');
-			$document->addScript(JURI::base().'plugins/content/popfeed/assets/jquery.colorbox-min.js');
-		}
+    $document = JFactory::getDocument();
+    if ($this->params->get('include_css', true)) {
+      $document->addStyleSheet(JURI::base().'plugins/content/popfeed/assets/popfeed.css');
+    }
+    if (in_array($this->include_external_libraries, array(0,1))) {
+      // Load jQuery
+      JHtml::_('jquery.framework');
+    }
+    if (in_array($this->include_external_libraries, array(0,2))) {
+      // Load ColorBox
+      $document->addStyleSheet(JURI::base().'plugins/content/popfeed/assets/colorbox.css');
+      $document->addScript(JURI::base().'plugins/content/popfeed/assets/jquery.colorbox-min.js');
+    }
   }
 
   public function replacePopFeedTag($replacement, $include_messages = false) {
@@ -184,14 +189,14 @@ class PlgPopFeedHelper {
     return (JText::_($key) == $key) ? $default : JText::_($key);
   }
 
-	function str_between($p1, $p2, $text) {
-		$spos = strpos($text, $p1);
-		if ($spos !== false) {
-			$start_pos = $spos+strlen($p1);
-			$end_pos = strpos($text, $p2);
-			return substr($text, $start_pos, $end_pos-$start_pos);
-		}
-		return '';
-	}
+  function str_between($p1, $p2, $text) {
+    $spos = strpos($text, $p1);
+    if ($spos !== false) {
+      $start_pos = $spos+strlen($p1);
+      $end_pos = strpos($text, $p2);
+      return substr($text, $start_pos, $end_pos-$start_pos);
+    }
+    return '';
+  }
 
 }
