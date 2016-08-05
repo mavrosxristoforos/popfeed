@@ -12,10 +12,6 @@ jimport( 'joomla.plugin.plugin' );
 
 class plgContentPopFeed extends JPlugin {
 
-  function plgContentPopFeed( &$subject, $config ) {
-    parent::__construct( $subject, $config );
-  }
-
   public function onContentBeforeDisplay($context, &$row, &$params, $page = 0) {
     require_once(JPATH_SITE.'/plugins/content/popfeed/helper.php');
     $helper = new PlgPopFeedHelper();
