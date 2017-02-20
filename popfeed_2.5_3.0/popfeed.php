@@ -15,7 +15,7 @@ class plgContentPopFeed extends JPlugin {
   public function onContentBeforeDisplay($context, &$row, &$params, $page = 0) {
     require_once(JPATH_SITE.'/plugins/content/popfeed/helper.php');
     $helper = new PlgPopFeedHelper();
-    $helper->initialize($this->params, $row);
+    $helper->initialize($this, $this->params, $row);
     if (!$helper->shouldBeHere()) { return; }
     $helper->loadAssets();
     $form_id = 'popfeed_form_'.$helper->article->id;
@@ -25,7 +25,7 @@ class plgContentPopFeed extends JPlugin {
   public function onContentPrepare($context, &$row, &$params, $page = 0) {
     require_once(JPATH_SITE.'/plugins/content/popfeed/helper.php');
     $helper = new PlgPopFeedHelper();
-    $helper->initialize($this->params, $row);
+    $helper->initialize($this, $this->params, $row);
 
     if (!$helper->initializeArticleText()) {
       $helper->replacePopFeedTag(''); // This is not an error message. It just removes the popfeed tag.
