@@ -14,7 +14,7 @@ class PlgPopFeedHelper {
   public $mailer;
   public $posted_values;
 
-  public function initialize($params, $row) {
+  public function initialize($plg_popfeed, $params, $row) {
     $this->params = $params;
     $this->messages = '';
     $this->hasArticle = (is_object($row));
@@ -22,11 +22,11 @@ class PlgPopFeedHelper {
     $this->include_external_libraries = $this->params->get('include_external_libraries', '0');
     $this->popfeed_appearance = $this->params->get('popfeed_appearance', '0');
 
-    JPlugin::loadLanguage('plg_content_popfeed');
+    $plg_popfeed->loadLanguage('plg_content_popfeed');
   }
 
   public function shouldBeHere() {
-    return ($this->hasArticle) && (isset($this->article->text))
+    return ($this->hasArticle) && (isset($this->article->text)) && (isset($this->article->id))
         && ( ($this->params->get('auto_all', false))
              || (strpos($this->article->text, '{popfeed}') !== false)
              || (strpos($this->article->text, 'id="popfeed_form_'.$this->article->id.'"')) )
