@@ -59,6 +59,9 @@ class plgContentPopFeed extends JPlugin {
       }
     }
 
+    // To find the text that the user has written.
+    $helper->determinePopFeedText();
+
     // Show Form.
     ob_start();
     // Determine if Rapid Contact Ex is installed.

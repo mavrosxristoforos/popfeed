@@ -24,9 +24,7 @@ if ($helper->hasCaptcha()) {
 <?php if ($helper->popfeed_appearance != '4') { ?>
 <div class="popfeed_link_div">
   <a href="<?php print $a_href; ?>" onClick="showPopFeed('<?php print $form_id; ?>')"
-     class="popfeedLink popfeed_link" id="<?php print $form_id; ?>_link"><?php
-  print $helper->i18n('LEAVE_YOUR_FEEDBACK', 'Leave your feedback!');
-?></a>
+     class="popfeedLink popfeed_link" id="<?php print $form_id; ?>_link"><?php print $helper->popfeed_text; ?></a>
 </div>
 <?php } ?>
 <?php if ($helper->popfeed_appearance == '1') { ?><div class="popfeed_form_box" id="<?php print $form_id; ?>_box"> </div><?php } ?>

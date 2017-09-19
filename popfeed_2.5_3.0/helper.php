@@ -31,6 +31,7 @@ class PlgPopFeedHelper {
     $this->article = ($this->hasArticle) ? $row : '';
     $this->include_external_libraries = $this->params->get('include_external_libraries', '0');
     $this->popfeed_appearance = $this->params->get('popfeed_appearance', '0');
+    $this->popfeed_text = $this->i18n('LEAVE_YOUR_FEEDBACK', 'Leave your feedback!'); // Default
 
     $plg_popfeed->loadLanguage('plg_content_popfeed');
   }
@@ -193,6 +194,16 @@ class PlgPopFeedHelper {
       return true;
     }
     return false;
+  }
+
+  public function determinePopFeedText() {
+    if ($this->hasArticle) {
+      $matches = array();
+      preg_match('/{popfeed}(.*){\/popfeed}/i', $this->article->text, $matches);
+      if (count($matches) > 1) {
+        $this->popfeed_text = $matches[1];
+      }
+    }
   }
 
   public function i18n($key, $default) {
