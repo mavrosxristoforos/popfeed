@@ -7,7 +7,7 @@
     <license>GNU General Public License</license>
     <authorEmail>mavrosxristoforos@gmail.com</authorEmail>
     <authorUrl>http://www.mavrosxristoforos.com/</authorUrl>
-<version>1.4.26</version>
+<version>1.4.27</version>
     <description>PopFeed - Complete Article Feedback Functionality, popping out of your site!</description>
     <files>        
         <filename plugin="popfeed">popfeed.php</filename>
@@ -26,19 +26,19 @@
       <fieldset name="basic">
         <field name="auto_all"
         type="radio"
-        default="0"
+        default="0" class="btn-group btn-group-yesno"
         label="Auto Include PopFeed"
         description="This is an option to automatically include PopFeed in every article. If this is No, to include PopFeed in an article you write {popfeed}Leave your Feedback (or whatever else text in here){/popfeed}">
-            <option value="0">No</option>
-            <option value="1">Yes</option>
+            <option value="0">JNO</option>
+            <option value="1">JYES</option>
         </field>
         <field name="auto_recipient"
         type="radio"
-        default="1"
+        default="1" class="btn-group btn-group-yesno"
         label="Auto Recipient"
         description="This is an option to automatically retrieve the email recipient from the article's author">
-            <option value="0">No</option>
-            <option value="1">Yes</option>
+            <option value="0">JNO</option>
+            <option value="1">JYES</option>
         </field>
         <field name="email_recipient"
         type="text"
@@ -67,11 +67,11 @@
             <option value="3">No external libraries.</option>
         </field>
         <field name="include_css"
-        type="radio" default="1"
+        type="radio" default="1" class="btn-group btn-group-yesno"
         label="Include PopFeed.css file"
         description="This is an option to choose whether or not to load the popfeed.css file.">
-            <option value="0">No</option>
-            <option value="1">Yes</option>
+            <option value="0">JNO</option>
+            <option value="1">JYES</option>
         </field>
         <field name="pre_text"
         type="textarea" filter="raw"
@@ -81,10 +81,10 @@
         <field name="auto_subject"
         type="radio"
         default="1"
-        label="Auto Subject"
+        label="Auto Subject" class="btn-group btn-group-yesno"
         description="This is an option to automatically retrieve the subject from the article's title">
-            <option value="0">No</option>
-            <option value="1">Yes</option>
+            <option value="0">JNO</option>
+            <option value="1">JYES</option>
         </field>
         <field name="auto_subject_pattern"
         type="text" default="Regarding: %s"
@@ -93,28 +93,28 @@
         <field name="use_captcha"
         type="radio"
         default="1"
-        label="Use Captcha"
+        label="Use Captcha" class="btn-group btn-group-yesno"
         description="This is an option to choose whether or not to include the site captcha plugin in the form.">
-            <option value="0">No</option>
-            <option value="1">Yes</option>
+            <option value="0">JNO</option>
+            <option value="1">JYES</option>
         </field>
       </fieldset>
       <fieldset name="filters" label="PLG_POPFEED_FILTERS_FIELDSET_LABEL">
         <field name="show_in_frontpage"
         type="radio"
-        default="0"
+        default="0" class="btn-group btn-group-yesno"
         label="Show in Frontpage"
         description="This is an option to show in the front-page articles, or not.">
-            <option value="0">No</option>
-            <option value="1">Yes</option>
+            <option value="0">JNO</option>
+            <option value="1">JYES</option>
         </field>
         <field name="show_in_blog"
         type="radio"
-        default="0"
+        default="0" class="btn-group btn-group-yesno"
         label="Show in Blog Layout"
         description="This is an option to show in blog layout articles, or not.">
-            <option value="0">No</option>
-            <option value="1">Yes</option>
+            <option value="0">JNO</option>
+            <option value="1">JYES</option>
         </field>
         <field name="catids"
         type="text"
@@ -130,19 +130,19 @@
       <fieldset name="advanced">
         <field name="htmlentities_in_email"
         type="radio"
-	default="0"
+	default="0" class="btn-group btn-group-yesno"
 	label="HTML Entities in Email"
 	description="Whether or not you want to apply the HTML Entities PHP Filter in the message, before sending.">
-	  <option value="0">No</option>
-	  <option value="1">Yes</option>
+	  <option value="0">JNO</option>
+	  <option value="1">JYES</option>
         </field>
         <field name="fixed_url"
         type="radio"
-        default="0"
+        default="0" class="btn-group btn-group-yesno"
         label="Fixed URL"
         description="A simple solution for people that want to use PopFeed in an exact page. Change this to Yes and write the URL of PopFeed in the Fixed URL Address parameter">
-            <option value="0">No</option>
-            <option value="1">Yes</option>        
+            <option value="0">JNO</option>
+            <option value="1">JYES</option>        
         </field>
         <field name="fixed_url_address"
         type="text"
