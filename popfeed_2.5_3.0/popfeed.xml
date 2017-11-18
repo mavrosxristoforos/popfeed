@@ -7,7 +7,7 @@
     <license>GNU General Public License</license>
     <authorEmail>mavrosxristoforos@gmail.com</authorEmail>
     <authorUrl>http://www.mavrosxristoforos.com/</authorUrl>
-<version>1.4.27</version>
+<version>1.5.30</version>
     <description>PopFeed - Complete Article Feedback Functionality, popping out of your site!</description>
     <files>        
         <filename plugin="popfeed">popfeed.php</filename>
