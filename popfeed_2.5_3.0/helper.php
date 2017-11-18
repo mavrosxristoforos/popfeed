@@ -103,8 +103,8 @@ class PlgPopFeedHelper {
       $view_array[] = 'category';
     }
 
-    return ( (in_array(JRequest::getVar('option'), $component_array))
-          && (in_array(JRequest::getVar('view'), $view_array)) );
+    return ( (in_array($_REQUEST['option'], $component_array))
+          && (in_array($_REQUEST['view'], $view_array)) );
   }
 
   public function addMessage($key, $def, $msg_type) {
