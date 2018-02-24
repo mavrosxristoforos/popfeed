@@ -36,7 +36,7 @@ if ($helper->hasCaptcha()) {
 <?php } ?>
 <div class="popfeed_form" id="<?php print $form_id; ?>">
 <?php if ($helper->params->get('pre_text', '<h3>What do you think?</h3>'."\n".'<p>Send us feedback!</p>') != '') { ?>
-<div class="popfeed_form_pre_text"><?php print $helper->i18n($helper->params->get('pre_text', '<h3>What do you think?</h3>'."\n".'<p>Send us feedback!</p>')); ?></div>
+<div class="popfeed_form_pre_text"><?php print $helper->i18n($helper->params->get('pre_text', '<h3>What do you think?</h3>'."\n".'<p>Send us feedback!</p>'), '<h3>What do you think?</h3>'."\n".'<p>Send us feedback!</p>'); ?></div>
 <?php } ?>
 <form id="<?php print $form_id; ?>_innerform" name="popfeed_form_innerform" method="post" <?php
   if ( ($this->params->get('fixed_url', true)) && ($this->params->get('fixed_url_address', '') != '') ) {
@@ -59,7 +59,7 @@ if ($helper->hasCaptcha()) {
              name="<?php print $form_id; ?>_subject"
              placeholder="<?php print $helper->i18n('PLG_POPFEED_SUBJECT', 'Message Subject'); ?>"
              <?php if ($helper->params->get('auto_subject', true)) {
-               print 'value="'.sprintf($helper->i18n($helper->params->get('auto_subject_pattern', 'Regarding: %s')), $helper->article->title).'"';
+               print 'value="'.sprintf($helper->i18n($helper->params->get('auto_subject_pattern', 'Regarding: %s'), 'Regarding: %s'), $helper->article->title).'"';
              } ?>/>
     </div>
     <div class="popfeed_field">
