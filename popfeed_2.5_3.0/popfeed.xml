@@ -6,8 +6,8 @@
     <copyright>Copyright (C) 2011 Christopher Mavros. All rights reserved.</copyright>
     <license>GNU General Public License</license>
     <authorEmail>mavrosxristoforos@gmail.com</authorEmail>
-    <authorUrl>http://www.mavrosxristoforos.com/</authorUrl>
-<version>1.5.33</version>
+    <authorUrl>https://mavrosxristoforos.com/</authorUrl>
+<version>1.5.37</version>
     <description>PopFeed - Complete Article Feedback Functionality, popping out of your site!</description>
     <files>        
         <filename plugin="popfeed">popfeed.php</filename>
@@ -16,7 +16,7 @@
         <folder>assets</folder>
     </files>
     <updateservers>
-      <server type="extension" priority="1" name="PopFeed Updates">http://mavrosxristoforos.com/index.php?option=com_extensionupdater&amp;extension=popfeed</server>
+      <server type="extension" priority="1" name="PopFeed Updates">https://mavrosxristoforos.com/index.php?option=com_extensionupdater&amp;extension=popfeed</server>
     </updateservers>
     <languages folder="language/en-GB">
       <language tag="en-GB">en-GB.plg_content_popfeed.ini</language>

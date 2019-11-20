@@ -5,8 +5,8 @@
 # author    Christopher Mavros - Mavrosxristoforos.com
 # copyright Copyright (C) 2008 Mavrosxristoforos.com. All Rights Reserved.
 # @license - http://www.gnu.org/licenses/gpl-2.0.html GNU/GPL
-# Websites: http://www.mavrosxristoforos.com
-# Technical Support:  Forum - http://www.mavrosxristoforos.com/support/forum
+# Websites: https://mavrosxristoforos.com
+# Technical Support:  Forum - https://mavrosxristoforos.com/support/forum
 -------------------------------------------------------------------------*/
 
 // no direct access
@@ -112,12 +112,13 @@ class PlgPopFeedHelper {
   }
 
   public function hasCaptcha() {
-    if ($this->params->get('use_captcha', '1')) {
+    return (JFactory::getConfig()->get('captcha') != '0');
+    /*if ($this->params->get('use_captcha', '1')) {
       $db = JFactory::getDBO();
       $db->setQuery('SELECT COUNT(`extension_id`) FROM `#__extensions` WHERE `type`="plugin" AND `folder`="captcha" AND `enabled`=1');
       return $db->loadResult();
     }
-    return false;
+    return false;*/
   }
 
   public function filterItem($value) {
@@ -130,10 +131,18 @@ class PlgPopFeedHelper {
       if (isset($_POST[$form_id.'_post'])) {
         $isValidPost = true;
         if ($this->hasCaptcha()) {
-          JPluginHelper::importPlugin('captcha');
+          $captcha = JCaptcha::getInstance(JFactory::getConfig()->get('captcha'));
+          /*JPluginHelper::importPlugin('captcha');
           $d = JEventDispatcher::getInstance();
           $res = $d->trigger('onCheckAnswer', 'not_used');
-          if( (!isset($res[0])) || (!$res[0]) ) {
+          if( (!isset($res[0])) || (!$res[0]) ) {*/
+          try {
+            if (!$captcha->checkAnswer('popfeed_recaptcha_'.$form_id)) {
+              $this->addMessage('INVALID_CAPTCHA', 'Invalid Captcha', 'error');
+              $isValidPost = false;
+            }
+          }
+          catch(RuntimeException $e) {
             $this->addMessage('INVALID_CAPTCHA', 'Invalid Captcha', 'error');
             $isValidPost = false;
           }
@@ -204,6 +213,17 @@ class PlgPopFeedHelper {
         $this->popfeed_text = $matches[1];
       }
     }
+  }
+
+  public function i18nParam($param, $default) {
+    $value = $this->params->get($param, $default);
+    if ($value != $default) {
+      $translated_value = JText::_($value, $default);
+      if ($translated_value != $default) {
+        $value = $translated_value;
+      }
+    }
+    return $value;
   }
 
   public function i18n($key, $default) {
