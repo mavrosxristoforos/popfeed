@@ -1,5 +1,13 @@
+.popfeed_link_div a { cursor: pointer; }
 .popfeed_field { margin-bottom: 7px; min-width: 220px; }
+.popfeed_fixed { position: fixed; width: 80px; padding: 5px; background: #f9f9f9; border: 1px solid #efefef; z-index: 100001; }
+.popfeed_fixed.top { top: 10%; }
+.popfeed_fixed.middle { top: 45%; }
+.popfeed_fixed.bottom { bottom: 10%; }
+.popfeed_fixed.left { left: 0; }
+.popfeed_fixed.right { right: 0; }
 
+/* To customize PopFeed, copy the following lines in your template custom.css file, or Custom CSS option field. */
 input.popfeedinputbox {
   /* Your CSS here for the inputboxes */
 }

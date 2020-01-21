@@ -7,7 +7,7 @@
     <license>GNU General Public License</license>
     <authorEmail>mavrosxristoforos@gmail.com</authorEmail>
     <authorUrl>https://mavrosxristoforos.com/</authorUrl>
-<version>1.5.38</version>
+<version>1.5.45</version>
     <description>PopFeed - Complete Article Feedback Functionality, popping out of your site!</description>
     <files>        
         <filename plugin="popfeed">popfeed.php</filename>
@@ -69,9 +69,24 @@
         <field name="include_css"
         type="radio" default="1" class="btn-group btn-group-yesno"
         label="Include PopFeed.css file"
-        description="This is an option to choose whether or not to load the popfeed.css file.">
+        description="This is an option to choose whether or not to load the popfeed.css file. Some functionalities may not work without this file.">
             <option value="0">JNO</option>
             <option value="1">JYES</option>
+        </field>
+        <field name="link_position" type="radio" default="popfeed_default" class="btn-group" label="Link Position" description="Where to show the PopFeed link. As a normal link within text, or fixed somewhere on the page.">
+            <option value="popfeed_default">Default</option>
+            <option value="popfeed_fixed">Fixed</option>
+        </field>
+        <field name="link_vertical" type="radio" default="auto" class="btn-group" label="Link Vertical Position" description="Where to position the fixed form link vertically" showon="link_position:popfeed_fixed">
+            <option value="auto">Auto</option>
+            <option value="top">Top</option>
+            <option value="middle">Center</option>
+            <option value="bottom">Bottom</option>
+        </field>
+        <field name="link_horizontal" type="radio" default="auto" class="btn-group" label="Link Horizontal Position" description="Where to position the fixed form link horizontally" showon="link_position:popfeed_fixed">
+            <option value="auto">Auto</option>
+            <option value="left">Left</option>
+            <option value="right">Right</option>
         </field>
         <field name="pre_text"
         type="textarea" filter="raw"

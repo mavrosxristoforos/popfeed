@@ -22,7 +22,7 @@ if ($helper->hasCaptcha()) {
 
 ?>
 <?php if ($helper->popfeed_appearance != '4') { ?>
-<div class="popfeed_link_div">
+<div class="popfeed_link_div <?php print $this->params->get('link_position'); ?> <?php print $this->params->get('link_vertical'); ?> <?php print $this->params->get('link_horizontal'); ?>">
   <a href="<?php print $a_href; ?>" onClick="showPopFeed('<?php print $form_id; ?>')"
      class="popfeedLink popfeed_link" id="<?php print $form_id; ?>_link"><?php print $helper->popfeed_text; ?></a>
 </div>
