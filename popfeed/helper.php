@@ -137,7 +137,7 @@ class PlgPopFeedHelper {
           $res = $d->trigger('onCheckAnswer', 'not_used');
           if( (!isset($res[0])) || (!$res[0]) ) {*/
           try {
-            if (!$captcha->checkAnswer('popfeed_recaptcha_'.$form_id)) {
+            if (!$captcha->checkAnswer(JFactory::getApplication()->input->get('popfeed_recaptcha_'.$form_id, null, 'string'))) {
               $this->addMessage('INVALID_CAPTCHA', 'Invalid Captcha', 'error');
               $isValidPost = false;
             }
