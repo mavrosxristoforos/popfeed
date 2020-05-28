@@ -82,7 +82,7 @@ class PlgPopFeedHelper {
       if ($this->params->get('catids', '') != '') {
         $db = JFactory::getDBO();
         $db->setQuery('SELECT COUNT(*) FROM `#__content` '.
-                      ' WHERE `id` = "'.$aid.'" '.
+                      ' WHERE `id` = "'.$this->article->id.'" '.
                       ' AND `catid` IN ('.$this->params->get('catids', '').')');
         return ($db->loadResult() > 0);
       }
