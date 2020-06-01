@@ -103,8 +103,9 @@ class PlgPopFeedHelper {
       $view_array[] = 'category';
     }
 
-    return ( (in_array($_REQUEST['option'], $component_array))
-          && (in_array($_REQUEST['view'], $view_array)) );
+    $input = JFactory::getApplication()->input;
+
+    return ( (in_array($input->get('option', '', 'cmd'), $component_array)) && (in_array($input->get('view', '', 'cmd'), $view_array)) );
   }
 
   public function addMessage($key, $def, $msg_type) {
