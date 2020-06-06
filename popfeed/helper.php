@@ -79,11 +79,11 @@ class PlgPopFeedHelper {
       if ( in_array($this->article->id, explode(',', $this->params->get('excluded_ids', ''))) ) {
         return false;
       }
-      if ($this->params->get('catids', '') != '') {
+      if (count($this->params->get('catids', array())) > 0) {
         $db = JFactory::getDBO();
         $db->setQuery('SELECT COUNT(*) FROM `#__content` '.
                       ' WHERE `id` = "'.$this->article->id.'" '.
-                      ' AND `catid` IN ('.$this->params->get('catids', '').')');
+                      ' AND `catid` IN ('.implode(',', $this->params->get('catids', array())).')');
         return ($db->loadResult() > 0);
       }
     }
