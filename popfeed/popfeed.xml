@@ -7,7 +7,7 @@
     <license>GNU General Public License</license>
     <authorEmail>mavrosxristoforos@gmail.com</authorEmail>
     <authorUrl>https://mavrosxristoforos.com/</authorUrl>
-<version>1.5.50</version>
+<version>1.5.52</version>
     <description>PopFeed - Complete Article Feedback Functionality, popping out of your site!</description>
     <files>        
         <filename plugin="popfeed">popfeed.php</filename>
@@ -18,9 +18,10 @@
     <updateservers>
       <server type="extension" priority="1" name="PopFeed Updates">https://mavrosxristoforos.com/index.php?option=com_extensionupdater&amp;extension=popfeed</server>
     </updateservers>
-    <languages folder="language/en-GB">
-      <language tag="en-GB">en-GB.plg_content_popfeed.ini</language>
-      <language tag="en-GB">en-GB.plg_content_popfeed.sys.ini</language>
+    <languages folder="language">
+      <language tag="en-GB">en-GB/en-GB.plg_content_popfeed.ini</language>
+      <language tag="fr-FR">fr-FR/fr-FR.plg_content_popfeed.ini</language>
+      <language tag="de-DE">de-DE/de-DE.plg_content_popfeed.ini</language>
     </languages>
     <config><fields name="params">
       <fieldset name="basic">
