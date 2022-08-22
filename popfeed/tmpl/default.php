@@ -45,27 +45,19 @@ if ($helper->hasCaptcha()) {
 ?>>
   <div class="popfeed_form_field_group field_group">
     <div class="popfeed_field">
-      <input type="text" id="<?php print $form_id; ?>_name" class="popfeedinputbox inputbox form-control"
-             name="<?php print $form_id; ?>_name"
-             placeholder="<?php print $helper->i18n('PLG_POPFEED_NAME', 'Name'); ?>"/>
+      <input type="text" id="<?php print $form_id; ?>_name" class="popfeedinputbox inputbox form-control" name="<?php print $form_id; ?>_name" placeholder="<?php print $helper->i18n('PLG_POPFEED_NAME', 'Name'); ?>"/>
     </div>
     <div class="popfeed_field">
-      <input type="email" id="<?php print $form_id; ?>_email" class="popfeedinputbox inputbox form-control"
-             name="<?php print $form_id; ?>_email"
-             placeholder="<?php print $helper->i18n('PLG_POPFEED_EMAIL', 'email&#64;site.com'); ?>"/>
+      <input type="email" id="<?php print $form_id; ?>_email" class="popfeedinputbox inputbox form-control" name="<?php print $form_id; ?>_email" placeholder="<?php print $helper->i18n('PLG_POPFEED_EMAIL', 'email&#64;site.com'); ?>"/>
     </div>
     <div class="popfeed_field">
-      <input type="text" id="<?php print $form_id; ?>_subject" class="popfeedinputbox inputbox form-control"
-             name="<?php print $form_id; ?>_subject"
-             placeholder="<?php print $helper->i18n('PLG_POPFEED_SUBJECT', 'Message Subject'); ?>"
+      <input type="text" id="<?php print $form_id; ?>_subject" class="popfeedinputbox inputbox form-control" name="<?php print $form_id; ?>_subject" placeholder="<?php print $helper->i18n('PLG_POPFEED_SUBJECT', 'Message Subject'); ?>"
              <?php if ($helper->params->get('auto_subject', true)) {
                print 'value="'.sprintf($helper->i18nParam('auto_subject_pattern', 'Regarding: %s'), $helper->article->title).'"';
              } ?>/>
     </div>
     <div class="popfeed_field">
-      <textarea id="<?php print $form_id; ?>_message" class="popfeedtextarea textarea form-control"
-                name="<?php print $form_id; ?>_message"
-                placeholder="<?php print $helper->i18n('PLG_POPFEED_MESSAGE', 'Your Feedback Message'); ?>"></textarea>
+      <textarea id="<?php print $form_id; ?>_message" class="popfeedtextarea textarea form-control" name="<?php print $form_id; ?>_message" placeholder="<?php print $helper->i18n('PLG_POPFEED_MESSAGE', 'Your Feedback Message'); ?>"></textarea>
     </div>
 <?php if ($helper->hasCaptcha()) { ?>
     <div class="popfeed_field captcha_field">
@@ -73,10 +65,7 @@ if ($helper->hasCaptcha()) {
     </div>
 <?php } ?>
     <div class="popfeed_field popfeed_button">
-      <input type="submit"
-      <textarea id="<?php print $form_id; ?>_submit" class="popfeedbutton button btn btn-primary"
-             name="<?php print $form_id; ?>_submit"
-             value="<?php print $helper->i18n('PLG_POPFEED_SUBMIT', 'Submit Feedback'); ?>"/>
+      <input type="submit" id="<?php print $form_id; ?>_submit" class="popfeedbutton button btn btn-primary" name="<?php print $form_id; ?>_submit" value="<?php print $helper->i18n('PLG_POPFEED_SUBMIT', 'Submit Feedback'); ?>"/>
     </div>
   </div>
   <input type="hidden" name="<?php print $form_id; ?>_post" value="<?php print uniqid(); ?>"/>
