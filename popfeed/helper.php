@@ -16,19 +16,28 @@ class PlgPopFeedHelper {
 
   public $params;
   public $article;
-  public $hasArticle;
+  public $hasRow;
   public $recipient;
   public $messages;
   public $include_external_libraries;
   public $popfeed_appearance;
   public $mailer;
   public $posted_values;
+  private $context;
 
-  public function initialize($plg_popfeed, $params, $row) {
+  public function initialize($plg_popfeed, $params, $row, $context) {
     $this->params = $params;
     $this->messages = '';
-    $this->hasArticle = (is_object($row));
-    $this->article = ($this->hasArticle) ? $row : '';
+    $this->context = $context;
+    $this->hasRow = (is_object($row));
+    if ($this->hasRow && ($this->context != 'mod_custom.content')) {
+      $this->article = $row;
+    } else if ($this->hasRow && ($this->context == 'mod_custom.content')) {
+      $this->article = $row;
+      $this->article->id = md5($this->article->text);
+    } else {
+      $this->article = '';
+    }
     $this->include_external_libraries = $this->params->get('include_external_libraries', '0');
     $this->popfeed_appearance = $this->params->get('popfeed_appearance', '0');
     $this->popfeed_text = $this->i18n('LEAVE_YOUR_FEEDBACK', 'Leave your feedback!'); // Default
@@ -37,11 +46,27 @@ class PlgPopFeedHelper {
   }
 
   public function shouldBeHere() {
-    return ($this->hasArticle) && (isset($this->article->text)) && (isset($this->article->id))
-        && ( ($this->params->get('auto_all', false))
-             || (strpos($this->article->text, '{popfeed}') !== false)
-             || (strpos($this->article->text, 'id="popfeed_form_'.$this->article->id.'"')) )
-        && ( ($this->isNotExcluded()) && ($this->isValidComponentView()) );
+    return (
+      $this->hasRow
+      && (isset($this->article->text))
+      && (isset($this->article->id))
+      && (
+        ($this->params->get('auto_all', false))
+        || (strpos($this->article->text, '{popfeed}') !== false)
+        || (strpos($this->article->text, 'id="popfeed_form_'.$this->article->id.'"'))
+      )
+      && (
+        ($this->isNotExcluded())
+        && ($this->isValidComponentView())
+      )
+    )
+    || (
+      $this->hasRow
+      && (isset($this->article->text))
+      && ($this->context == 'mod_custom.content')
+      && ($this->params->get('allow_in_custom_modules', '0'))
+      && (strpos($this->article->text, '{popfeed}') !== false) // By keeping this as a must in module context, we ensure that we never add PopFeed automatically.
+    );
   }
 
   public function initializeArticleText() {
@@ -59,12 +84,12 @@ class PlgPopFeedHelper {
     $this->recipient = $this->params->get('email_recipient', 'email@email.com');
     if ($this->params->get('auto_recipient', false)) {
       // Auto Recipient from article author.
-      if ($this->hasArticle) {
-        $user_tmp = JFactory::getuser($this->article->created_by);
+      if ($this->hasRow && ($this->context != 'mod_custom.content')) {
+        $user_tmp = JFactory::getUser($this->article->created_by);
         $this->recipient = $user_tmp->email;
       }
     }
-    if (($this->hasArticle) && (isset($this->article->text))) {
+    if (($this->hasRow) && (isset($this->article->text))) {
       if (strpos($this->article->text, '{popfeed_mailrecipient}') !== false) {
         $this->recipient = $this->str_between('{popfeed_mailrecipient}', '{/popfeed_mailrecipient}', $this->article->text);
         $this->article->text = str_replace('{popfeed_mailrecipient}'.$this->recipient.'{/popfeed_mailrecipient}', '', $this->article->text);
@@ -75,6 +100,7 @@ class PlgPopFeedHelper {
   }
 
   public function isNotExcluded() {
+    // Only evoked when checking if this should be in an article. This function is not called in the module context.
     if ( (isset($this->article->id)) && ($this->article->id > 0) ) {
       if ( in_array($this->article->id, explode(',', $this->params->get('excluded_ids', ''))) ) {
         return false;
@@ -96,6 +122,7 @@ class PlgPopFeedHelper {
   }
 
   public function isValidComponentView() {
+    // Only evoked when checking if this should be in an article. This function is not called in the module context.
     $component_array = array('com_content');
     $view_array      = array('article');
 
@@ -132,7 +159,7 @@ class PlgPopFeedHelper {
   }
 
   public function prepareEmail() {
-    if ($this->hasArticle) {
+    if ($this->hasRow) {
       $form_id = 'popfeed_form_'.$this->article->id;
       if (isset($_POST[$form_id.'_post'])) {
         $isValidPost = true;
@@ -202,7 +229,7 @@ class PlgPopFeedHelper {
   }
 
   public function replacePopFeedTag($replacement, $include_messages = false) {
-    if ($this->hasArticle) {
+    if ($this->hasRow) {
       $replacement = ($include_messages && ($this->messages != ''))
                    ? '<div class="popfeed_messages">'.$this->messages.'</div>'.$replacement : $replacement;
       $this->article->text = preg_replace('/{popfeed}.*{\/popfeed}/i', $replacement, $this->article->text);
@@ -212,7 +239,7 @@ class PlgPopFeedHelper {
   }
 
   public function determinePopFeedText() {
-    if ($this->hasArticle) {
+    if ($this->hasRow) {
       $matches = array();
       preg_match('/{popfeed}(.*){\/popfeed}/i', $this->article->text, $matches);
       if (count($matches) > 1) {

@@ -24,7 +24,7 @@ if ($helper->hasCaptcha()) {
 <?php if ($helper->popfeed_appearance != '4') { ?>
 <div class="popfeed_link_div <?php print $this->params->get('link_position'); ?> <?php print $this->params->get('link_vertical'); ?> <?php print $this->params->get('link_horizontal'); ?>">
   <a href="<?php print $a_href; ?>" onClick="showPopFeed('<?php print $form_id; ?>')"
-     class="popfeedLink popfeed_link" id="<?php print $form_id; ?>_link"><?php print $helper->popfeed_text; ?></a>
+     class="popfeedLink popfeed_link <?php print $this->params->get('link_class', ''); ?>" id="<?php print $form_id; ?>_link"><?php print $helper->popfeed_text; ?></a>
 </div>
 <?php } ?>
 <?php if ($helper->popfeed_appearance == '1') { ?><div class="popfeed_form_box" id="<?php print $form_id; ?>_box"> </div><?php } ?>
@@ -34,7 +34,7 @@ if ($helper->hasCaptcha()) {
     print $helper->i18n('CLOSE_FORM', 'Close Form');
   ?></a>
 <?php } ?>
-<div class="popfeed_form" id="<?php print $form_id; ?>">
+<div class="popfeed_form <?php print $this->params->get('form_class', ''); ?>" id="<?php print $form_id; ?>">
 <?php if ($helper->i18nParam('pre_text', "<h3>What do you think?</h3>\n<p>Send us feedback!</p>") != '') { ?>
 <div class="popfeed_form_pre_text"><?php print $helper->i18nParam('pre_text', "<h3>What do you think?</h3>\n<p>Send us feedback!</p>"); ?></div>
 <?php } ?>
@@ -52,7 +52,7 @@ if ($helper->hasCaptcha()) {
     </div>
     <div class="popfeed_field">
       <input type="text" id="<?php print $form_id; ?>_subject" class="popfeedinputbox inputbox form-control" name="<?php print $form_id; ?>_subject" placeholder="<?php print $helper->i18n('PLG_POPFEED_SUBJECT', 'Message Subject'); ?>"
-             <?php if ($helper->params->get('auto_subject', true)) {
+             <?php if ($helper->params->get('auto_subject', true) && isset($helper->article->title)) {
                print 'value="'.sprintf($helper->i18nParam('auto_subject_pattern', 'Regarding: %s'), $helper->article->title).'"';
              } ?>/>
     </div>

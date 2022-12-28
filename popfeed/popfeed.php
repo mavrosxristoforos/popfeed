@@ -16,25 +16,33 @@ jimport( 'joomla.plugin.plugin' );
 
 class plgContentPopFeed extends JPlugin {
 
-  public function onContentBeforeDisplay($context, &$row, &$params, $page = 0) {
-    require_once(JPATH_SITE.'/plugins/content/popfeed/helper.php');
-    $helper = new PlgPopFeedHelper();
-    $helper->initialize($this, $this->params, $row);
-    if (!$helper->shouldBeHere()) { return; }
+  private function doBeforeDisplay($helper) {
     $helper->loadAssets();
     $form_id = 'popfeed_form_'.$helper->article->id;
     include JPluginHelper::getLayoutPath('content', 'popfeed', 'scripts_and_styles');
   }
 
+  public function onContentBeforeDisplay($context, &$row, &$params, $page = 0) {
+    require_once(JPATH_SITE.'/plugins/content/popfeed/helper.php');
+    $helper = new PlgPopFeedHelper();
+    $helper->initialize($this, $this->params, $row, $context);
+    if (!$helper->shouldBeHere()) { return; }
+    self::doBeforeDisplay($helper);
+  }
+
   public function onContentPrepare($context, &$row, &$params, $page = 0) {
     require_once(JPATH_SITE.'/plugins/content/popfeed/helper.php');
     $helper = new PlgPopFeedHelper();
-    $helper->initialize($this, $this->params, $row);
+    $helper->initialize($this, $this->params, $row, $context);
+
+    if ($context == 'mod_custom.content') {
+      self::doBeforeDisplay($helper);
+    }
 
     if (!$helper->initializeArticleText()) {
       $helper->replacePopFeedTag(''); // This is not an error message. It just removes the popfeed tag.
       return true;
-      // We have an article here on. (hasArticle == true)
+      // We have an article or module here on. (hasRow == true)
     }
 
     if (!$helper->initializeRecipient()) {
@@ -64,7 +72,6 @@ class plgContentPopFeed extends JPlugin {
 
     // Show Form.
     ob_start();
-    // Determine if Rapid Contact Ex is installed.
     include JPluginHelper::getLayoutPath('content', 'popfeed');
     $form = ob_get_clean();
     $helper->replacePopFeedTag($form, true); // True means to include any messages from the post process.

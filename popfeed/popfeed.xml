@@ -7,8 +7,8 @@
     <license>GNU General Public License</license>
     <authorEmail>mavrosxristoforos@gmail.com</authorEmail>
     <authorUrl>https://mavrosxristoforos.com/</authorUrl>
-<version>1.5.54</version>
-    <description>PopFeed - Complete Article Feedback Functionality, popping out of your site!</description>
+<version>1.6.68</version>
+    <description><![CDATA[PopFeed - Complete Article Feedback Functionality, popping out of your site!<br/>Usage in content: <strong>{popfeed}Your link text{/popfeed}</strong>]]></description>
     <files>        
         <filename plugin="popfeed">popfeed.php</filename>
         <filename>helper.php</filename>
@@ -37,7 +37,7 @@
         type="radio"
         default="1" class="btn-group btn-group-yesno"
         label="Auto Recipient"
-        description="This is an option to automatically retrieve the email recipient from the article's author">
+        description="This is an option to automatically retrieve the email recipient from the article's author. Only valid if used inside an article.">
             <option value="0">JNO</option>
             <option value="1">JYES</option>
         </field>
@@ -89,6 +89,8 @@
             <option value="left">Left</option>
             <option value="right">Right</option>
         </field>
+        <field name="link_class" type="text" default="" label="PopFeed link class" description="Add your own CSS classes to the PopFeed link."/>
+        <field name="form_class" type="text" default="" label="PopFeed form class" description="Add your own CSS classes to the PopFeed form."/>
         <field name="pre_text"
         type="textarea" filter="raw"
         default="&lt;h3&gt;What do you think?&lt;/h3&gt;&#10;&lt;p&gt;Send us feedback!&lt;/p&gt;"
@@ -135,9 +137,12 @@
         <field name="catids" type="category" extension="com_content" default="" label="Filter Categories" description="This is an option to include PopFeed, only in articles of the specified categories." multiple="multiple"/>
         <field name="excluded_ids"
         type="text" default=""
-        label="Exclude IDs"
+        label="Exclude Article IDs"
         description="Use this option if you want to exclude PopFeed from some article IDs. Example: 1,2,3"/>
-        
+        <field name="allow_in_custom_modules" type="radio" default="0" class="btn-group btn-group-yesno" label="Allow in Custom Modules" description="Whether or not to run PopFeed within the content of Custom HTML modules.">
+            <option value="0">JNO</option>
+            <option value="1">JYES</option>
+        </field>
       </fieldset>
       <fieldset name="advanced">
         <field name="htmlentities_in_email"
