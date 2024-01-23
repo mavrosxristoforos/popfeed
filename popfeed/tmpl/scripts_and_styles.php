@@ -10,9 +10,11 @@
 -------------------------------------------------------------------------*/
 
 // no direct access
-defined( '_JEXEC' ) or die( 'Restricted access' );
+\defined( '_JEXEC' ) or die( 'Restricted access' );
 
-$document = JFactory::getDocument();
+use \Joomla\CMS\Factory;
+
+$document = Factory::getDocument();
 
 // Initialize Form Scripts & Styles
 $style = '';

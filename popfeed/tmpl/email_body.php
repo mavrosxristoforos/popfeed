@@ -10,7 +10,7 @@
 -------------------------------------------------------------------------*/
 
 // no direct access
-defined( '_JEXEC' ) or die( 'Restricted access' );
+\defined( '_JEXEC' ) or die( 'Restricted access' );
 
 ?>
 You received a message from <?php print $helper->posted_values['name']; ?> (<?php print $helper->posted_values['email']; ?>)

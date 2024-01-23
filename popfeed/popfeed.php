@@ -10,16 +10,17 @@
 -------------------------------------------------------------------------*/
 
 // no direct access
-defined( '_JEXEC' ) or die( 'Restricted access' );
+\defined( '_JEXEC' ) or die( 'Restricted access' );
 
-jimport( 'joomla.plugin.plugin' );
+use \Joomla\CMS\Plugin\CMSPlugin;
+use \Joomla\CMS\Plugin\PluginHelper;
 
-class plgContentPopFeed extends JPlugin {
+class plgContentPopFeed extends CMSPlugin {
 
   private function doBeforeDisplay($helper) {
     $helper->loadAssets();
     $form_id = 'popfeed_form_'.$helper->article->id;
-    include JPluginHelper::getLayoutPath('content', 'popfeed', 'scripts_and_styles');
+    include PluginHelper::getLayoutPath('content', 'popfeed', 'scripts_and_styles');
   }
 
   public function onContentBeforeDisplay($context, &$row, &$params, $page = 0) {
@@ -55,15 +56,21 @@ class plgContentPopFeed extends JPlugin {
       // Comes here only if email should be sent.
       // Prepare email body.
       ob_start();
-      include JPluginHelper::getLayoutPath('content', 'popfeed', 'email_body');
+      include PluginHelper::getLayoutPath('content', 'popfeed', 'email_body');
       $email_body = ob_get_clean();
 
       $helper->mailer->setBody($email_body);
-      if ($helper->mailer->Send() !== true) {
-        $helper->addMessage('YOUR_FEEDBACK_COULD_NOT_BE_SUBMITTED', 'Your feedback could not be submitted. Please try again.', 'error');
+      try {
+        if ($helper->mailer->Send() !== true) {
+          $helper->addMessage('YOUR_FEEDBACK_COULD_NOT_BE_SUBMITTED', 'Your feedback could not be submitted. Please try again.', 'error');
+        }
+        else {
+          $helper->addMessage('THANK_YOU_FOR_YOUR_FEEDBACK', 'Thank you for your feedback.', 'message');
+        }
       }
-      else {
-        $helper->addMessage('THANK_YOU_FOR_YOUR_FEEDBACK', 'Thank you for your feedback.', 'message');
+      catch(\Throwable $e) {
+        $helper->addMessage('YOUR_FEEDBACK_COULD_NOT_BE_SUBMITTED', 'Your feedback could not be submitted. Please try again.', 'error');
+        $helper->addMessage('POPFEED_ERROR_MESSAGE_KEY', $e->getMessage(), 'error'); // this key intentionally does not exist
       }
     }
 
@@ -72,7 +79,7 @@ class plgContentPopFeed extends JPlugin {
 
     // Show Form.
     ob_start();
-    include JPluginHelper::getLayoutPath('content', 'popfeed');
+    include PluginHelper::getLayoutPath('content', 'popfeed');
     $form = ob_get_clean();
     $helper->replacePopFeedTag($form, true); // True means to include any messages from the post process.
   }

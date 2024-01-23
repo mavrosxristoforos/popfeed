@@ -10,7 +10,13 @@
 -------------------------------------------------------------------------*/
 
 // no direct access
-defined( '_JEXEC' ) or die( 'Restricted access' );
+\defined( '_JEXEC' ) or die( 'Restricted access' );
+
+use \Joomla\CMS\Factory;
+use \Joomla\CMS\Language\Text;
+use \Joomla\CMS\Uri\Uri;
+use \Joomla\CMS\HTML\HTMLHelper;
+//use \Joomla\CMS\Plugin\PluginHelper;
 
 class PlgPopFeedHelper {
 
@@ -24,6 +30,7 @@ class PlgPopFeedHelper {
   public $mailer;
   public $posted_values;
   private $context;
+  public $popfeed_text;
 
   public function initialize($plg_popfeed, $params, $row, $context) {
     $this->params = $params;
@@ -85,7 +92,7 @@ class PlgPopFeedHelper {
     if ($this->params->get('auto_recipient', false)) {
       // Auto Recipient from article author.
       if ($this->hasRow && ($this->context != 'mod_custom.content')) {
-        $user_tmp = JFactory::getUser($this->article->created_by);
+        $user_tmp = Factory::getUser($this->article->created_by);
         $this->recipient = $user_tmp->email;
       }
     }
@@ -111,7 +118,7 @@ class PlgPopFeedHelper {
         $catids = explode(',', $catids);
       }
       if (count($catids) > 0) {
-        $db = JFactory::getDBO();
+        $db = Factory::getDBO();
         $db->setQuery('SELECT COUNT(*) FROM `#__content` '.
                       ' WHERE `id` = "'.$this->article->id.'" '.
                       ' AND `catid` IN ('.implode(',', $catids).')');
@@ -135,7 +142,7 @@ class PlgPopFeedHelper {
       $view_array[] = 'category';
     }
 
-    $input = JFactory::getApplication()->input;
+    $input = Factory::getApplication()->input;
 
     return ( (in_array($input->get('option', '', 'cmd'), $component_array)) && (in_array($input->get('view', '', 'cmd'), $view_array)) );
   }
@@ -145,9 +152,9 @@ class PlgPopFeedHelper {
   }
 
   public function hasCaptcha() {
-    return (JFactory::getConfig()->get('captcha') != '0');
+    return (Factory::getConfig()->get('captcha') != '0');
     /*if ($this->params->get('use_captcha', '1')) {
-      $db = JFactory::getDBO();
+      $db = Factory::getDBO();
       $db->setQuery('SELECT COUNT(`extension_id`) FROM `#__extensions` WHERE `type`="plugin" AND `folder`="captcha" AND `enabled`=1');
       return $db->loadResult();
     }
@@ -164,13 +171,13 @@ class PlgPopFeedHelper {
       if (isset($_POST[$form_id.'_post'])) {
         $isValidPost = true;
         if ($this->hasCaptcha()) {
-          $captcha = JCaptcha::getInstance(JFactory::getConfig()->get('captcha'));
-          /*JPluginHelper::importPlugin('captcha');
+          $captcha = JCaptcha::getInstance(Factory::getConfig()->get('captcha'));
+          /*PluginHelper::importPlugin('captcha');
           $d = JEventDispatcher::getInstance();
           $res = $d->trigger('onCheckAnswer', 'not_used');
           if( (!isset($res[0])) || (!$res[0]) ) {*/
           try {
-            if (!$captcha->checkAnswer(JFactory::getApplication()->input->get('popfeed_recaptcha_'.$form_id, null, 'string'))) {
+            if (!$captcha->checkAnswer(Factory::getApplication()->input->get('popfeed_recaptcha_'.$form_id, null, 'string'))) {
               $this->addMessage('INVALID_CAPTCHA', 'Invalid Captcha', 'error');
               $isValidPost = false;
             }
@@ -193,9 +200,9 @@ class PlgPopFeedHelper {
             $this->addMessage('INVALID_EMAIL', 'Submitted email is invalid. Please try again.', 'error');
           }
           else {
-            $this->mailer = JFactory::getMailer();
+            $this->mailer = Factory::getMailer();
             $this->mailer->addRecipient($this->recipient); // One recipient is allowed when initializing.
-            $app = JFactory::getApplication();
+            $app = Factory::getApplication();
             $this->mailer->setSender(array($app->getCfg('mailfrom'),$this->posted_values['name']));
             if(version_compare(JVERSION, '3.5', 'ge')) {
               $this->mailer->addReplyTo($this->posted_values['email'], $this->posted_values['name']);
@@ -213,18 +220,18 @@ class PlgPopFeedHelper {
   }
 
   public function loadAssets() {
-    $document = JFactory::getDocument();
+    $document = Factory::getDocument();
     if ($this->params->get('include_css', true)) {
-      $document->addStyleSheet(JURI::base().'plugins/content/popfeed/assets/popfeed.css');
+      $document->addStyleSheet(Uri::base().'plugins/content/popfeed/assets/popfeed.css');
     }
     if (in_array($this->include_external_libraries, array(0,1))) {
       // Load jQuery
-      JHtml::_('jquery.framework');
+      HTMLHelper::_('jquery.framework');
     }
     if (in_array($this->include_external_libraries, array(0,2))) {
       // Load ColorBox
-      $document->addStyleSheet(JURI::base().'plugins/content/popfeed/assets/colorbox.css');
-      $document->addScript(JURI::base().'plugins/content/popfeed/assets/jquery.colorbox-min.js');
+      $document->addStyleSheet(Uri::base().'plugins/content/popfeed/assets/colorbox.css');
+      $document->addScript(Uri::base().'plugins/content/popfeed/assets/jquery.colorbox-min.js');
     }
   }
 
@@ -251,7 +258,7 @@ class PlgPopFeedHelper {
   public function i18nParam($param, $default) {
     $value = $this->params->get($param, $default);
     if ($value != $default) {
-      $translated_value = JText::_($value, $default);
+      $translated_value = Text::_($value, $default);
       if ($translated_value != $default) {
         $value = $translated_value;
       }
@@ -260,7 +267,7 @@ class PlgPopFeedHelper {
   }
 
   public function i18n($key, $default) {
-    return (JText::_($key) == $key) ? $default : JText::_($key);
+    return (Text::_($key) == $key) ? $default : Text::_($key);
   }
 
   function str_between($p1, $p2, $text) {
