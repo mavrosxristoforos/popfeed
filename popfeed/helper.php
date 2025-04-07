@@ -16,6 +16,7 @@ use \Joomla\CMS\Factory;
 use \Joomla\CMS\Language\Text;
 use \Joomla\CMS\Uri\Uri;
 use \Joomla\CMS\HTML\HTMLHelper;
+use \Joomla\CMS\Captcha\Captcha;
 //use \Joomla\CMS\Plugin\PluginHelper;
 
 class PlgPopFeedHelper {
@@ -171,7 +172,7 @@ class PlgPopFeedHelper {
       if (isset($_POST[$form_id.'_post'])) {
         $isValidPost = true;
         if ($this->hasCaptcha()) {
-          $captcha = JCaptcha::getInstance(Factory::getConfig()->get('captcha'));
+          $captcha = Captcha::getInstance(Factory::getConfig()->get('captcha'));
           /*PluginHelper::importPlugin('captcha');
           $d = JEventDispatcher::getInstance();
           $res = $d->trigger('onCheckAnswer', 'not_used');

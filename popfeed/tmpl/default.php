@@ -13,13 +13,14 @@
 \defined( '_JEXEC' ) or die( 'Restricted access' );
 
 use \Joomla\CMS\Factory;
+use \Joomla\CMS\Captcha\Captcha;
 
 $form_id = 'popfeed_form_'.$helper->article->id;
 $a_href = ($helper->popfeed_appearance == '0') ? '#'.$form_id : 'javascript:void(0);';
 
 if ($helper->hasCaptcha()) {
   // Initialize Captcha
-  $captcha_field = (Factory::getConfig()->get('captcha') != '0') ? JCaptcha::getInstance(Factory::getConfig()->get('captcha'))->display('popfeed_recaptcha_'.$form_id, 'popfeed_recaptcha_'.$form_id, 'g-recaptcha') : '';
+  $captcha_field = (Factory::getConfig()->get('captcha') != '0') ? Captcha::getInstance(Factory::getConfig()->get('captcha'))->display('popfeed_recaptcha_'.$form_id, 'popfeed_recaptcha_'.$form_id, 'g-recaptcha') : '';
 }
 
 ?>
